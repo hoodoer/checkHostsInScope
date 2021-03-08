@@ -1,16 +1,37 @@
 #!/bin/bash
 
+# if you have problems with, you can try to complain to @hoodoer
+# Maybe I'll fix it. Maybe. 
+
+
 # First argument is filename with domains to check
 # Second argument is file with in scope IPs
 # Problems with this, complain to @hoodoer
+declare maxWidth=0;
+declare columnBuffer=5
 
 declare -a outOfScopeArray;
+declare -a outOfScopeArray2;
 
 if [ "$#" -ne 2 ]; then
 	echo "Needs 2 params, domain list (file) and an IP list (file)."
 	echo "ex: ./checkHostsInScope.sh ./subdomains.txt ./inScopeIPs.txt"
 else
 	echo "Checking in scope subdomains given in scope IP list..."
+	
+	# First we need to see the longest URL to set our column width
+	while IFS= read -r line
+	do
+		len=${#line}
+
+		if ((len > maxWidth));
+		then
+			maxWidth=$len
+		fi;
+	done < "$1"
+
+	columnWidth=$((maxWidth+5));
+
 	echo 
 	echo "In scope:"
 	while IFS= read -r line
@@ -18,10 +39,12 @@ else
 		for ip in `host $line | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`
 		do
 			if grep -q $ip $2; then
-				echo "$line     $ip"
+				printf "%-${columnWidth}s  %-${columnWidth}s" $line $ip
+				echo
 			else
 				outOfScopeArray+=("$line     $ip")
-				# echo "out-of-scope: $line    $ip"
+				printf -v stringer "%-${columnWidth}s  %-${columnWidth}s\n" $line $ip
+				outOfScopeArray2+=$stringer
 			fi
 		done
 
@@ -30,9 +53,10 @@ else
 
 	echo
 	echo "Out of scope:"
-	for subdomain in "${outOfScopeArray[@]}"
+	for subdomain in "${outOfScopeArray2[@]}"
 	do 
 		echo "$subdomain"
-	done
+		echo
+	done 
 
 fi

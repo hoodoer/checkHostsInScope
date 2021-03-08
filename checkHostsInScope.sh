@@ -11,7 +11,6 @@ declare maxWidth=0;
 declare columnBuffer=5
 
 declare -a outOfScopeArray;
-declare -a outOfScopeArray2;
 
 if [ "$#" -ne 2 ]; then
 	echo "Needs 2 params, domain list (file) and an IP list (file)."
@@ -30,7 +29,7 @@ else
 		fi;
 	done < "$1"
 
-	columnWidth=$((maxWidth+5));
+	columnWidth=$((maxWidth+columnBuffer));
 
 	echo 
 	echo "In scope:"
@@ -42,9 +41,8 @@ else
 				printf "%-${columnWidth}s  %-${columnWidth}s" $line $ip
 				echo
 			else
-				outOfScopeArray+=("$line     $ip")
 				printf -v stringer "%-${columnWidth}s  %-${columnWidth}s\n" $line $ip
-				outOfScopeArray2+=$stringer
+				outOfScopeArray+=$stringer
 			fi
 		done
 
@@ -53,7 +51,7 @@ else
 
 	echo
 	echo "Out of scope:"
-	for subdomain in "${outOfScopeArray2[@]}"
+	for subdomain in "${outOfScopeArray[@]}"
 	do 
 		echo "$subdomain"
 		echo

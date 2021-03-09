@@ -4,6 +4,6 @@ Bash script to take a list of domains/subdomains (e.g. from amass) and check if 
 e.g. ./checkHostsInScope.sh ./subdomains.txt ./inScopeIPs.txt
 
 
-Optionally you can also do a whose on the IP address and get the owning organization like so:
+Optionally you can also do a whois on the IP address and get the owning organization like so:
 
 e.g. ./checkHostsInScope.sh ./subdomains.txt ./inScopeIPs.txt --yekkiMode

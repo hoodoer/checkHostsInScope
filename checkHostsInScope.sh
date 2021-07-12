@@ -51,7 +51,7 @@ else
 	do
 		for ip in `host $line | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'`
 		do
-			if grep -q $ip $2; then
+			if grep -q -w $ip $2; then
 
 				if $yekkiMode ; then
 					# Let's check whois for the organizations for the IP
